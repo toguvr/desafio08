@@ -50,8 +50,8 @@ const CartProvider: React.FC = ({ children }) => {
 
       newProducts[indexProduct].quantity += 1;
 
-      setProducts(newProducts);
       await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
+      setProducts(newProducts);
     },
     [products],
   );
@@ -69,8 +69,8 @@ const CartProvider: React.FC = ({ children }) => {
 
         newProducts.push(currentProduct);
 
-        setProducts(newProducts);
         await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
+        setProducts(newProducts);
       } else {
         increment(product.id);
       }
@@ -87,11 +87,12 @@ const CartProvider: React.FC = ({ children }) => {
 
       if (newProducts[indexProduct].quantity >= 1) {
         newProducts[indexProduct].quantity -= 1;
-      } else {
-        newProducts.splice(indexProduct, 1);
+        if (newProducts[indexProduct].quantity === 0) {
+          newProducts.splice(indexProduct, 1);
+        }
       }
-      setProducts(newProducts);
       await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
+      setProducts(newProducts);
     },
     [products],
   );
