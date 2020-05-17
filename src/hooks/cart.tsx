@@ -47,11 +47,13 @@ const CartProvider: React.FC = ({ children }) => {
       const indexProduct = newProducts.findIndex(
         newProduct => newProduct.id === id,
       );
+      
+      if (indexProduct >= 0) {
+        newProducts[indexProduct].quantity += 1;
+      }
 
-      newProducts[indexProduct].quantity += 1;
-
-      await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
       setProducts(newProducts);
+      await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
     },
     [products],
   );
@@ -68,9 +70,9 @@ const CartProvider: React.FC = ({ children }) => {
         const currentProduct = { ...product, quantity: 1 };
 
         newProducts.push(currentProduct);
-
-        await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
+        
         setProducts(newProducts);
+        await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
       } else {
         increment(product.id);
       }
@@ -85,14 +87,17 @@ const CartProvider: React.FC = ({ children }) => {
         newProduct => newProduct.id === id,
       );
 
-      if (newProducts[indexProduct].quantity >= 1) {
-        newProducts[indexProduct].quantity -= 1;
-        if (newProducts[indexProduct].quantity === 0) {
-          newProducts.splice(indexProduct, 1);
+      if (indexProduct >= 0) {
+        if (newProducts[indexProduct].quantity >= 1) {
+          newProducts[indexProduct].quantity -= 1;
+          if (newProducts[indexProduct].quantity === 0) {
+            newProducts.splice(indexProduct, 1);
+          }
         }
       }
+      
+      setProducts(newProducts);        
       await AsyncStorage.setItem('@MyCart', JSON.stringify(newProducts));
-      setProducts(newProducts);
     },
     [products],
   );
